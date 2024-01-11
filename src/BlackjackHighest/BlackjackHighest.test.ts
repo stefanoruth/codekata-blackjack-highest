@@ -13,5 +13,6 @@ describe('BlackjackHighest', () => {
         expect(blackjackHighest(['four', 'seven', 'ace'])).toBe('below seven')
         expect(blackjackHighest(['jack', 'ace'])).toBe('blackjack ace')
         expect(blackjackHighest(['two', 'three', 'four', 'five', 'six', 'ace'])).toBe('blackjack six')
+       expect(blackjackHighest(['ace', 'ace', 'four', 'five'])).toBe('blackjack ace')
     })
 })
