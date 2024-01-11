@@ -1,3 +1,3 @@
-export function BlackjackHighest(cards: string[]) {
+export function blackjackHighest(cards: string[]) {
     return ''
 }
