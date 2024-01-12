@@ -1,4 +1,4 @@
-export function blackjackHighest(cards: string[]) {
+export function blackjackHighestNew(cards: string[]) {
     const numbers = convertStringsToNumbers(cards)
     let myNumber = numbers.reduce((acc, current) => {
         return (acc = acc + current.number)
