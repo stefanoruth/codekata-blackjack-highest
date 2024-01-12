@@ -6,6 +6,7 @@ describe('BlackjackHighest', () => {
         expect(blackjackHighest(['king', 'ace', 'two'])).toBe('below king')
         expect(blackjackHighest(['queen', 'ace', 'ten'])).toBe('blackjack queen')
         expect(blackjackHighest(['queen', 'ace', 'seven'])).toBe('below queen')
+        expect(blackjackHighest(['ace', 'ace', 'four', 'five'])).toBe('blackjack ace')
         expect(blackjackHighest(['five', 'six', 'king'])).toBe('blackjack king')
         expect(blackjackHighest(['five', 'eight', 'jack'])).toBe('above jack')
         expect(blackjackHighest(['four', 'four', 'four', 'four', 'four', 'ace'])).toBe('blackjack four')
