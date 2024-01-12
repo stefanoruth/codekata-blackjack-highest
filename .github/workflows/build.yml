@@ -36,3 +36,6 @@ jobs:
 
       - name: Tests
         run: pnpm run test
+
+      - name: Benchmark
+        run: pnpm vitest bench
