@@ -2,7 +2,7 @@ import { bench, describe } from 'vitest'
 import { blackjackHighest } from './BlackjackHighest'
 
 describe('BlackjackHighest', () => {
-    bench('below king', () => {
+    bench('Solution', () => {
         blackjackHighest(['king', 'ace', 'two'])
     })
 })
