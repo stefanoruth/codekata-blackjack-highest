@@ -19,60 +19,55 @@ type Card = keyof typeof cardDefs;
 
 interface Branch {
     sum: number,
-    aceHigh?: true
+    aceHigh?: boolean
+    highestCard: Card | null
+    highestValue: number | null,
+    valid?: boolean;
 }
 
 export function blackjackHighest(cards: Card[]) {
-    const branches = cards.reduce<[Branch, Branch]>((branches, currentCard) => {
-        const cardValue = cardDefs[currentCard];
-        const secondBranch = branches[1].aceHigh ? cardValue[0] :  cardValue[1] ?? cardValue[0]
-
-        branches[0].sum += cardValue[0];
-        branches[1].sum += secondBranch;
-
-        if(!branches[1].aceHigh && currentCard === 'ace')
-        {
-            branches[1].aceHigh = true;
-        }
-
-        return branches;
-    }, [{sum: 0}, {sum: 0}]);
-
-    const pickedBranch = branches.sort((a, b) => {
-        const aValid = a.sum <= 21;
-        const bValid = b.sum <= 21;
-        
-        if(aValid && !bValid)
-        {
-            return -1;
-        }else if(!aValid && bValid)
-        {
-            return 1;
-        }else if(aValid && bValid)
-        {
-            return b.sum - a.sum;
-        }
-        
-        return 0;
-    })[0]
-    
-    if(!pickedBranch)
+    let branchA: Branch = {sum: 0, highestCard: null, highestValue: null};
+    let branchB: Branch = {sum: 0, highestCard: null, highestValue: null};
+    for(const currentCard of cards)
     {
-        throw new Error("Branch not found!")
+        const cardValue = cardDefs[currentCard];
+        const secondBranch = branchB.aceHigh ? cardValue[0] :  cardValue[1] ?? cardValue[0]
+
+        branchA.sum += cardValue[0];
+        branchB.sum += secondBranch;
+
+        if(!branchA.highestValue || branchA.highestValue < cardValue[0])
+        {
+            branchA.highestCard = currentCard;
+            branchA.highestValue = cardValue[0];
+        }
+
+        if(!branchB.highestValue || branchB.highestValue < secondBranch)
+        {
+            branchB.highestCard = currentCard;
+            branchB.highestValue = secondBranch;
+        }
+
+        branchB.aceHigh = branchB.aceHigh || currentCard === 'ace';
     }
 
-    const sortedCards = cards.sort((a, b) => {
-        const aKey = a === 'ace' && pickedBranch.aceHigh ? 1 : 0;
-        const bKey = b === 'ace' && pickedBranch.aceHigh ? 1 : 0;
-        
-        const aValue = cardDefs[a][aKey] || 0;
-        const bValue = cardDefs[b][bKey] || 0;
+    branchA.valid = branchA.sum <= 21;
+    branchB.valid = branchB.sum <= 21;
 
-        return bValue - aValue;
-    })
+    let pickedBranch = branchA;
+    if(!branchA.valid && branchB.valid)
+    {
+        pickedBranch = branchB;
+    }else if(branchA.valid && branchB.valid)
+    {
+        if(branchB.sum > branchA.sum)
+        {
+            pickedBranch = branchB;
+        }
+    }
 
     let prefix = 'below';
-    if(pickedBranch.sum > 21)
+    if(!pickedBranch.valid)
     {
         prefix = 'above'
     }else if(pickedBranch.sum === 21)
@@ -80,5 +75,5 @@ export function blackjackHighest(cards: Card[]) {
         prefix = 'blackjack'
     }
 
-    return `${prefix} ${sortedCards[0]}`
+    return `${prefix} ${pickedBranch.highestCard}`
 }
